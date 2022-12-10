@@ -57,7 +57,7 @@ public class TransferTest {
     }
 
     @Test
-    void shouldNotTransferMoneyIfAmountOfTransferMoreThanBalance() {
+    void transferMoneyIfAmountMoreThanBalance() {
         var loginPage = open("http://localhost:9999/", LoginPage.class);
         var authInfo = getAuthInfo();
         var verificationPage = loginPage.validLogin(authInfo);
@@ -68,6 +68,8 @@ public class TransferTest {
         var currentFirstCardBalance = dashboardPage.getCardBalance(firstCardInfo);
         var currentSecondCardBalance = dashboardPage.getCardBalance(secondCardInfo);
         var amount = generateInvalidAmount(currentSecondCardBalance);
+        var expectedSecondCardBalance = currentSecondCardBalance - amount;
+        var expectedFirstCardBalance = currentFirstCardBalance + amount;
         var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
         transferPage.makeTransfer(String.valueOf(amount), secondCardInfo);
         transferPage.shouldFindErrorMessage("Недостаточно средств на карте");
